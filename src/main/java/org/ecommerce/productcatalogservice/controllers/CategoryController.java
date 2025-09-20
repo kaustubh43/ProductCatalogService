@@ -1,8 +1,8 @@
-package org.example.productcatalogservice.controller;
+package org.ecommerce.productcatalogservice.controllers;
 
 
-import org.example.productcatalogservice.models.Category;
-import org.example.productcatalogservice.models.State;
+import org.ecommerce.productcatalogservice.models.Category;
+import org.ecommerce.productcatalogservice.models.State;
 import org.springframework.web.bind.annotation.*;
 
 /**

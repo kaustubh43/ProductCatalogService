@@ -1,4 +1,4 @@
-package org.example.productcatalogservice.models;
+package org.ecommerce.productcatalogservice.models;
 
 import lombok.Getter;
 import lombok.Setter;

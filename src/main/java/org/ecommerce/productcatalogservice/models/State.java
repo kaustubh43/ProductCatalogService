@@ -1,4 +1,4 @@
-package org.example.productcatalogservice.models;
+package org.ecommerce.productcatalogservice.models;
 
 public enum State {
     ACTIVE,
