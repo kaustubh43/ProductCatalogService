@@ -1,6 +1,7 @@
 package org.ecommerce.productcatalogservice.controllers;
 
 
+import org.ecommerce.productcatalogservice.dtos.CategoryDto;
 import org.ecommerce.productcatalogservice.models.Category;
 import org.ecommerce.productcatalogservice.models.State;
 import org.springframework.web.bind.annotation.*;
@@ -17,43 +18,46 @@ public class CategoryController {
      * @return Category object
      */
     @GetMapping("/{id}")
-    Category getCategoryById(@PathVariable int id) {
+    CategoryDto getCategoryById(@PathVariable int id) {
         Category category = new Category();
         category.setId(id);
-        return category;
+        return null;
     }
 
     /**
      * Post a new category
-     * @return category
+     * @return CategoryDto
      */
     @PostMapping("/")
-     Category createCategory(@RequestBody Category category){
-        return category;
+    CategoryDto createCategory(@RequestBody Category category){
+        return null;
     }
 
     /**
      * Update an existing category
+     * @return CategoryDto
      */
     @PutMapping("/update")
-    Category updateCategory(@RequestBody Category category){
-        return category;
+    CategoryDto updateCategory(@RequestBody Category category){
+        return null;
     }
 
     /**
      * Patch an existing category
+     * @return CategoryDto
      */
     @PatchMapping("/patch")
-    Category patchCategory(@RequestBody Category category){
-        return category;
+    CategoryDto patchCategory(@RequestBody Category category){
+        return null;
     }
 
     /**
      * Delete an existing category
+     * @return  CategoryDto
      */
     @DeleteMapping("/delete")
-    Category deleteCategory(@RequestBody Category category){
+    CategoryDto deleteCategory(@RequestBody Category category){
         category.setState(State.DELETED);
-        return category;
+        return null;
     }
 }

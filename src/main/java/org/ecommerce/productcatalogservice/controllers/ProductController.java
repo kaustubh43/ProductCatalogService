@@ -1,5 +1,6 @@
 package org.ecommerce.productcatalogservice.controllers;
 
+import org.ecommerce.productcatalogservice.dtos.ProductDto;
 import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
 import org.springframework.web.bind.annotation.*;
@@ -13,49 +14,49 @@ public class ProductController {
 
     /**
      * Get Product by their ID passed as a path variable.
-     * @return Product
+     * @return ProductDto
      */
     @GetMapping("/{id}")
-    Product getProductById(@PathVariable("id") Long productId){
+    ProductDto getProductById(@PathVariable("id") Long productId){
         Product product = new Product();
         product.setId(productId);
-        return product;
+        return null;
     }
 
     /**
      * Add a product.
-     * @return product
+     * @return ProductDto
      */
     @PostMapping("/")
-    Product addProduct(@RequestBody Product product){
-        return product;
+    ProductDto addProduct(@RequestBody Product product){
+        return null; // Todo: Create a product and all other functions
     }
 
     /**
      * Put a product
-     * @return product
+     * @return ProductDto
      */
     @PutMapping("/update")
-    Product updateProduct(@RequestBody Product product){
-        return product;
+    ProductDto updateProduct(@RequestBody Product product){
+        return null;
     }
 
     /**
      * Patch a product
-     * @return Product
+     * @return ProductDto
      */
     @PatchMapping("/patch")
-    Product patchProduct(@RequestBody Product product){
-        return product;
+    public ProductDto patchProduct(@RequestBody Product product){
+        return null;
     }
 
     /**
      * Delete a product
-     * @return product
+     * @return ProductDto
      */
     @DeleteMapping("/delete")
-    Product deleteProduct(@RequestBody Product product){
+    public ProductDto deleteProduct(@RequestBody Product product){
         product.setState(State.DELETED);
-        return product;
+        return null;
     }
 }
