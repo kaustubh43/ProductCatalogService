@@ -16,5 +16,4 @@ public class Product extends BaseModel {
 
     // Business Specific Fields
     private Boolean isPrime;
-
 }

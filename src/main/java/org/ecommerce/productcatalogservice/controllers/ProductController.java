@@ -6,7 +6,14 @@ import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
 import org.ecommerce.productcatalogservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for handling product-related endpoints.
@@ -27,9 +34,35 @@ public class ProductController {
      * @return ProductDto
      */
     @GetMapping("/{id}")
-    ProductDto getProductById(@PathVariable("id") Long productId){
-        Product product = productService.getProductById(productId);
-        return getProductDtoFromProduct(product);
+    ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
+        try {
+            if (productId <= 0) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            Product product = productService.getProductById(productId);
+            ProductDto productDto = getProductDtoFromProduct(product);
+            MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+            headers.add("someString1", "someString2");
+            return new ResponseEntity<>(productDto, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/")
+    ResponseEntity<List<ProductDto>> getAllProducts(){
+        try{
+            List<Product> products = productService.getAllProducts();
+
+            List<ProductDto> productDtos = products.stream()
+                    .map(this::getProductDtoFromProduct)
+                    .toList();
+
+            return new ResponseEntity<>(productDtos, HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

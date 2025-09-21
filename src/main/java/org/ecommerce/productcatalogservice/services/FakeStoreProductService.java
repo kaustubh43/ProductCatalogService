@@ -7,9 +7,12 @@ import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -22,15 +25,27 @@ public class FakeStoreProductService implements IProductService {
     @Override
     public Product getProductById(Long id) {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        FakeStoreProductDto fakeStoreProductDto =
-                restTemplate.getForObject("http://fakestoreapi.com/products/{id}",
+        ResponseEntity<FakeStoreProductDto> response =
+                restTemplate.getForEntity("http://fakestoreapi.com/products/{id}",
                         FakeStoreProductDto.class,
                         id);
-        return productFromFakeStoreProductDto(fakeStoreProductDto);
+        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
+            return productFromFakeStoreProductDto(response.getBody());
+        }
+        return null;
     }
 
     @Override
     public List<Product> getAllProducts() {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto[]> response =
+                restTemplate.getForEntity("http://fakestoreapi.com/products/",
+                FakeStoreProductDto[].class);
+        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
+            return Arrays.stream(response.getBody())
+                    .map(this::productFromFakeStoreProductDto)
+                    .toList();
+        }
         return List.of();
     }
 
