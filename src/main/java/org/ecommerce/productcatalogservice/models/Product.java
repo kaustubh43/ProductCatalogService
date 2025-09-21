@@ -2,11 +2,11 @@ package org.ecommerce.productcatalogservice.models;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@SuperBuilder
 public class Product extends BaseModel {
     private String name;
     private String description;
@@ -17,9 +17,4 @@ public class Product extends BaseModel {
     // Business Specific Fields
     private Boolean isPrime;
 
-    public Product() {
-        this.setCreatedAt(new Date());
-        this.setLastUpdatedAt(new Date());
-        this.setState(State.ACTIVE);
-    }
 }
