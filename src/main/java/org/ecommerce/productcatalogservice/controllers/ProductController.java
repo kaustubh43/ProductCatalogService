@@ -2,6 +2,7 @@ package org.ecommerce.productcatalogservice.controllers;
 
 import org.ecommerce.productcatalogservice.dtos.CategoryDto;
 import org.ecommerce.productcatalogservice.dtos.ProductDto;
+import org.ecommerce.productcatalogservice.models.Category;
 import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
 import org.ecommerce.productcatalogservice.services.IProductService;
@@ -42,13 +43,17 @@ public class ProductController {
             Product product = productService.getProductById(productId);
             ProductDto productDto = getProductDtoFromProduct(product);
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-            headers.add("someString1", "someString2");
+//            headers.add("someString1", "someString2");
             return new ResponseEntity<>(productDto, headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Get all Products
+     * @return List<Product>
+     */
     @GetMapping("/")
     ResponseEntity<List<ProductDto>> getAllProducts(){
         try{
@@ -78,9 +83,16 @@ public class ProductController {
      * Put a product
      * @return ProductDto
      */
-    @PutMapping("/update")
-    ProductDto updateProduct(@RequestBody Product product){
-        return null;
+    @PutMapping("/update/{id}")
+    ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
+        try{
+            Product product = getProductFromProductDto(productDto);
+            Product replacedProduct = productService.replaceProduct(product, productId);
+            ProductDto response = getProductDtoFromProduct(replacedProduct);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
