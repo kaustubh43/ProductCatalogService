@@ -13,7 +13,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +31,7 @@ public class ProductController {
 
     /**
      * Get Product by their ID passed as a path variable.
-     * @return ProductDto
+     * @return ResponseEntity<ProductDto>
      */
     @GetMapping("/{id}")
     ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
@@ -52,7 +51,7 @@ public class ProductController {
 
     /**
      * Get all Products
-     * @return List<Product>
+     * @return ResponseEntity<List<ProductDto>>
      */
     @GetMapping("/")
     ResponseEntity<List<ProductDto>> getAllProducts(){
@@ -74,14 +73,14 @@ public class ProductController {
      * Add a product.
      * @return ProductDto
      */
-    @PostMapping("/")
-    ProductDto addProduct(@RequestBody Product product){
-        return null; // Todo: Create a product and all other functions
+    @PostMapping("/add")
+    ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto){
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED); // Todo: Create a product and all other functions
     }
 
     /**
      * Put a product
-     * @return ProductDto
+     * @return ResponseEntity<ProductDto>
      */
     @PutMapping("/update/{id}")
     ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
@@ -97,21 +96,20 @@ public class ProductController {
 
     /**
      * Patch a product
-     * @return ProductDto
+     * @return ResponseEntity<ProductDto>
      */
-    @PatchMapping("/patch")
-    public ProductDto patchProduct(@RequestBody Product product){
-        return null;
+    @PatchMapping("/patch/{id}")
+    public ResponseEntity<ProductDto> patchProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     /**
      * Delete a product
      * @return ProductDto
      */
-    @DeleteMapping("/delete")
-    public ProductDto deleteProduct(@RequestBody Product product){
-        product.setState(State.DELETED);
-        return null;
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ProductDto> deleteProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     /**
@@ -136,4 +134,18 @@ public class ProductController {
                 .build();
     }
 
+    /**
+     * Helper method to convert ProductDto -> Product
+     * @param productDto
+     * @return Product
+     */
+    private Product getProductFromProductDto(ProductDto productDto) {
+        return Product.builder()
+                .id(productDto.getId())
+                .name(productDto.getName())
+                .imageUrl(productDto.getImageUrl())
+                .price(productDto.getPrice())
+                .category(Category.builder().name(productDto.getCategoryDto().getName()).build())
+                .build();
+    }
 }
