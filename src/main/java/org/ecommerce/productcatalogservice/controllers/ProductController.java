@@ -4,7 +4,6 @@ import org.ecommerce.productcatalogservice.dtos.CategoryDto;
 import org.ecommerce.productcatalogservice.dtos.ProductDto;
 import org.ecommerce.productcatalogservice.models.Category;
 import org.ecommerce.productcatalogservice.models.Product;
-import org.ecommerce.productcatalogservice.models.State;
 import org.ecommerce.productcatalogservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

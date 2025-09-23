@@ -1,5 +1,6 @@
 package org.ecommerce.productcatalogservice.services;
 
+import io.micrometer.common.lang.Nullable;
 import org.ecommerce.productcatalogservice.dtos.FakeStoreProductDto;
 import org.ecommerce.productcatalogservice.dtos.ProductDto;
 import org.ecommerce.productcatalogservice.models.Category;
@@ -7,10 +8,12 @@ import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
