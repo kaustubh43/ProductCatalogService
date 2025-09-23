@@ -85,7 +85,7 @@ public class ProductController {
     @PutMapping("/update/{id}")
     ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
         try{
-            Product product = getProductFromProductDto(productDto);
+            Product product = getProductFromProductDto(productDto, productId);
             Product replacedProduct = productService.replaceProduct(product, productId);
             ProductDto response = getProductDtoFromProduct(replacedProduct);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -114,7 +114,7 @@ public class ProductController {
 
     /**
      * Helper method to convert Product -> ProductDto
-     * @param product
+     * @param product Product Domain Object
      * @return ProductDto
      */
     private ProductDto getProductDtoFromProduct(Product product) {
@@ -136,12 +136,13 @@ public class ProductController {
 
     /**
      * Helper method to convert ProductDto -> Product
-     * @param productDto
+     * @param productDto ProductDto Object
+     * @param productId Long id of the product
      * @return Product
      */
-    private Product getProductFromProductDto(ProductDto productDto) {
+    private Product getProductFromProductDto(ProductDto productDto, Long productId) {
         return Product.builder()
-                .id(productDto.getId())
+                .id(productId)
                 .name(productDto.getName())
                 .imageUrl(productDto.getImageUrl())
                 .price(productDto.getPrice())

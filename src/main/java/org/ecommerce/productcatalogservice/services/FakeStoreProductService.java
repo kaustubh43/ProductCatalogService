@@ -60,13 +60,13 @@ public class FakeStoreProductService implements IProductService {
                 .category(product.getCategory().getName())
                 .image(product.getImageUrl())
                 .build();
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> response =
-                restTemplate.exchange("https://fakestoreapi.com/products/{id}",
-                        HttpMethod.PUT,
-                        new HttpEntity<>(requestDto),
-                        FakeStoreProductDto.class,
-                        id);
+        ResponseEntity<FakeStoreProductDto> response = requestForEntity(
+                HttpMethod.PUT,
+                "http://fakestoreapi.com/products/{id}",
+                requestDto,
+                FakeStoreProductDto.class,
+                id
+            );
 
         if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
             return productFromFakeStoreProductDto(response.getBody());
@@ -92,5 +92,12 @@ public class FakeStoreProductService implements IProductService {
                 .price(dto.getPrice())
                 .category(Category.builder().name(dto.getCategory()).build())
                 .build();
+    }
+
+    private <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, @Nullable Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, responseType);
+        ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
+        return restTemplate.execute(url, httpMethod, requestCallback, responseExtractor, uriVariables);
     }
 }
