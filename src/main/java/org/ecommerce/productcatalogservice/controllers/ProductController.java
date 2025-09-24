@@ -34,18 +34,17 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
-        try {
-            if (productId <= 0) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            Product product = productService.getProductById(productId);
-            ProductDto productDto = getProductDtoFromProduct(product);
-            MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-//            headers.add("someString1", "someString2");
-            return new ResponseEntity<>(productDto, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        if (productId <= 0) {
+            throw new IllegalArgumentException("Product Id must be greater than 0");
+        } else if (productId > 20){
+            throw new RuntimeException("Something went wrong on our side");
         }
+        Product product = productService.getProductById(productId);
+        ProductDto productDto = getProductDtoFromProduct(product);
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+//            headers.add("someString1", "someString2");
+        return new ResponseEntity<>(productDto, headers, HttpStatus.OK);
     }
 
     /**
