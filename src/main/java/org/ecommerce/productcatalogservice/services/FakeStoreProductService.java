@@ -1,6 +1,7 @@
 package org.ecommerce.productcatalogservice.services;
 
 import io.micrometer.common.lang.Nullable;
+import org.ecommerce.productcatalogservice.clients.FakeStoreApiClient;
 import org.ecommerce.productcatalogservice.dtos.FakeStoreProductDto;
 import org.ecommerce.productcatalogservice.dtos.ProductDto;
 import org.ecommerce.productcatalogservice.models.Category;
@@ -26,15 +27,22 @@ public class FakeStoreProductService implements IProductService {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
+    @Autowired
+    private FakeStoreApiClient fakeStoreApiClients;
+
     @Override
     public Product getProductById(Long id) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> response =
-                restTemplate.getForEntity("http://fakestoreapi.com/products/{id}",
-                        FakeStoreProductDto.class,
-                        id);
-        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
-            return productFromFakeStoreProductDto(response.getBody());
+//        RestTemplate restTemplate = restTemplateBuilder.build();
+//        ResponseEntity<FakeStoreProductDto> response =
+//                restTemplate.getForEntity("http://fakestoreapi.com/products/{id}",
+//                        FakeStoreProductDto.class,
+//                        id);
+//        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
+//            return productFromFakeStoreProductDto(response.getBody());
+//        }
+        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClients.getProductById(id);
+        if(fakeStoreProductDto != null) {
+            return productFromFakeStoreProductDto(fakeStoreProductDto);
         }
         return null;
     }
