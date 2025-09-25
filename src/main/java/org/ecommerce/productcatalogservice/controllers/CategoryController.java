@@ -18,7 +18,7 @@ public class CategoryController {
      * @return Category object
      */
     @GetMapping("/{id}")
-    CategoryDto getCategoryById(@PathVariable int id) {
+    CategoryDto getCategoryById(@PathVariable Long id) {
         Category category = new Category();
         category.setId(id);
         return null;
