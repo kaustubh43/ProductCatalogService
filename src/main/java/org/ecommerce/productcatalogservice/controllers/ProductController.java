@@ -34,7 +34,6 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long productId){
-
         if (productId <= 0) {
             throw new IllegalArgumentException("Product Id must be greater than 0");
         } else if (productId > 20){
@@ -43,7 +42,7 @@ public class ProductController {
         Product product = productService.getProductById(productId);
         ProductDto productDto = getProductDtoFromProduct(product);
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-//            headers.add("someString1", "someString2");
+//      headers.add("someString1", "someString2");
         return new ResponseEntity<>(productDto, headers, HttpStatus.OK);
     }
 
@@ -105,9 +104,13 @@ public class ProductController {
      * Delete a product
      * @return ProductDto
      */
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ProductDto> deleteProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductDto> deleteProduct(@PathVariable("id") Long productId){
+        Product deletedProduct =  productService.deleteProductById(productId);
+        if(deletedProduct == null){
+            throw new RuntimeException("Something went wrong on our side: Could not delete product with id: " +  productId);
+        }
+        return new ResponseEntity<>(getProductDtoFromProduct(deletedProduct), HttpStatus.OK);
     }
 
     /**
@@ -144,7 +147,11 @@ public class ProductController {
                 .name(productDto.getName())
                 .imageUrl(productDto.getImageUrl())
                 .price(productDto.getPrice())
-                .category(Category.builder().name(productDto.getCategoryDto().getName()).build())
+                .description(productDto.getDescription())
+                .category(Category.builder()
+                        .id(productDto.getCategoryDto().getId())
+                        .name(productDto.getCategoryDto().getName())
+                        .build())
                 .build();
     }
 }

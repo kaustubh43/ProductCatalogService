@@ -17,7 +17,6 @@ import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -28,19 +27,11 @@ public class FakeStoreProductService implements IProductService {
     private RestTemplateBuilder restTemplateBuilder;
 
     @Autowired
-    private FakeStoreApiClient fakeStoreApiClients;
+    private FakeStoreApiClient fakeStoreApiClient;
 
     @Override
     public Product getProductById(Long id) {
-//        RestTemplate restTemplate = restTemplateBuilder.build();
-//        ResponseEntity<FakeStoreProductDto> response =
-//                restTemplate.getForEntity("http://fakestoreapi.com/products/{id}",
-//                        FakeStoreProductDto.class,
-//                        id);
-//        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
-//            return productFromFakeStoreProductDto(response.getBody());
-//        }
-        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClients.getProductById(id);
+        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProductById(id);
         if(fakeStoreProductDto != null) {
             return productFromFakeStoreProductDto(fakeStoreProductDto);
         }
@@ -49,38 +40,28 @@ public class FakeStoreProductService implements IProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto[]> response =
-                restTemplate.getForEntity("http://fakestoreapi.com/products/",
-                FakeStoreProductDto[].class);
-        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
-            return Arrays.stream(response.getBody())
-                    .map(this::productFromFakeStoreProductDto)
-                    .toList();
+        List<Product> productList = fakeStoreApiClient.getAllProducts();
+        if(productList != null) {
+            return productList;
         }
         return List.of();
     }
 
     @Override
     public Product replaceProduct(Product product, Long id) {
-        FakeStoreProductDto requestDto = FakeStoreProductDto.builder()
-                .id(id)
-                .title(product.getName())
-                .price(product.getPrice())
-                .description(product.getDescription())
-                .category(product.getCategory().getName())
-                .image(product.getImageUrl())
-                .build();
-        ResponseEntity<FakeStoreProductDto> response = requestForEntity(
-                HttpMethod.PUT,
-                "http://fakestoreapi.com/products/{id}",
-                requestDto,
-                FakeStoreProductDto.class,
-                id
-            );
+        Product replacedProduct = fakeStoreApiClient.replaceProduct(product, id);
 
-        if(response.getStatusCode().is2xxSuccessful() &&  response.getBody() != null) {
-            return productFromFakeStoreProductDto(response.getBody());
+        if(replacedProduct != null) {
+            return replacedProduct;
+        }
+        return null;
+    }
+
+    @Override
+    public Product deleteProductById(Long id) {
+        Product deleted = fakeStoreApiClient.deleteProductById(id);
+        if(deleted != null) {
+            return deleted;
         }
         return null;
     }
