@@ -1,4 +1,4 @@
-package org.ecommerce.productcatalogservice.controllers;
+package org.ecommerce.productcatalogservice.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * ControllerAdvisor handles exceptions thrown by controller methods and maps them to appropriate HTTP responses.
+ * GlobalExceptionHandler handles exceptions thrown by controller methods and maps them to appropriate HTTP responses.
  * It provides centralized exception handling for IllegalArgumentException, RuntimeException, and NullPointerException.
  * More to be added if required
  */
 @RestControllerAdvice
-public class ControllerAdvisor {
+public class GlobalExceptionHandler {
 
     /**
      * Handles IllegalArgumentException thrown by controller methods.
@@ -22,7 +22,7 @@ public class ControllerAdvisor {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(Exception exception){
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("{\"error\": \"" + exception.getMessage() + "\"}", HttpStatus.BAD_REQUEST);
     }
 
     /**
