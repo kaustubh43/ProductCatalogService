@@ -25,7 +25,7 @@ public class ProductController {
     private final IProductService productService;
 
     @Autowired
-    public ProductController(@Qualifier("fakeStoreProductService") IProductService productService) {
+    public ProductController(IProductService productService) {
         this.productService = productService;
     }
 
@@ -51,7 +51,7 @@ public class ProductController {
      * Get all Products
      * @return ResponseEntity<List<ProductDto>>
      */
-    @GetMapping("/")
+    @GetMapping
     ResponseEntity<List<ProductDto>> getAllProducts(){
         try{
             List<Product> products = productService.getAllProducts();
@@ -102,7 +102,7 @@ public class ProductController {
      */
     @PatchMapping("/patch/{id}")
     public ResponseEntity<ProductDto> patchProduct(@RequestBody ProductDto productDto,@PathVariable("id") Long productId){
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     /**
