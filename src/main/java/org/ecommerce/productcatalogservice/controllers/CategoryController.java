@@ -3,8 +3,14 @@ package org.ecommerce.productcatalogservice.controllers;
 
 import org.ecommerce.productcatalogservice.dtos.CategoryDto;
 import org.ecommerce.productcatalogservice.models.Category;
-import org.ecommerce.productcatalogservice.models.State;
+import org.ecommerce.productcatalogservice.services.ICategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for handling category-related endpoints.
@@ -13,24 +19,37 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/category")
 public class CategoryController {
 
+    private ICategoryService categoryService;
+
+    @Autowired
+    public void setCategoryService(ICategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
     /**
      * Get Category by their ID passed as a path variable.
      * @return Category object
      */
     @GetMapping("/{id}")
-    CategoryDto getCategoryById(@PathVariable Long id) {
-        Category category = new Category();
-        category.setId(id);
-        return null;
+    ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        if(category == null) {
+            throw new  RuntimeException("Something went wrong on our side, Category could not be found");
+        }
+        return new ResponseEntity<>(from(category), HttpStatus.OK);
     }
 
     /**
      * Post a new category
      * @return CategoryDto
      */
-    @PostMapping("/")
-    CategoryDto createCategory(@RequestBody Category category){
-        return null;
+    @PostMapping
+    ResponseEntity<CategoryDto> createCategory(@RequestBody Category category){
+        Category created = categoryService.createCategory(category.getId(), category.getName(), category.getDescription());
+        if(created == null) {
+            throw new RuntimeException("Something went wrong on our side, Category could not be created");
+        }
+        return new ResponseEntity<>(from(category), HttpStatus.CREATED);
     }
 
     /**
@@ -38,8 +57,8 @@ public class CategoryController {
      * @return CategoryDto
      */
     @PutMapping("/update")
-    CategoryDto updateCategory(@RequestBody Category category){
-        return null;
+    ResponseEntity<CategoryDto> updateCategory(@RequestBody Category category){
+        throw new RuntimeException("Method not implemented");
     }
 
     /**
@@ -47,8 +66,8 @@ public class CategoryController {
      * @return CategoryDto
      */
     @PatchMapping("/patch")
-    CategoryDto patchCategory(@RequestBody Category category){
-        return null;
+    ResponseEntity<CategoryDto> patchCategory(@RequestBody Category category){
+        throw new RuntimeException("Method not implemented");
     }
 
     /**
@@ -56,8 +75,25 @@ public class CategoryController {
      * @return  CategoryDto
      */
     @DeleteMapping("/delete")
-    CategoryDto deleteCategory(@RequestBody Category category){
-        category.setState(State.DELETED);
-        return null;
+    ResponseEntity<CategoryDto> deleteCategory(@RequestBody Category category){
+        throw new RuntimeException("Method not implemented");
+    }
+
+    @GetMapping
+    ResponseEntity<List<CategoryDto>> getAllCategories(){
+        List<Category> categories = categoryService.getCategories();
+        if(categories == null || categories.isEmpty()) {
+            throw new RuntimeException("Something went wrong on our side, Categories could not be found");
+        }
+        return new ResponseEntity<>(categories.stream().map(this::from).collect(Collectors.toList()), HttpStatus.OK);
+    }
+
+    private CategoryDto from(Category category) {
+        CategoryDto dto = CategoryDto.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .description(category.getDescription())
+                .build();
+        return dto;
     }
 }
