@@ -68,6 +68,20 @@ public class FakeStoreProductService implements IProductService {
 
     @Override
     public Product createProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setCategory(Category.builder()
+                        .name(productDto.getCategoryDto().getName())
+                        .id(productDto.getCategoryDto().getId())
+                        .description(productDto.getCategoryDto().getDescription())
+                .build());
+        product.setImageUrl(productDto.getImageUrl());
+        Product createdProduct = fakeStoreApiClient.createProduct(productDto);
+        if(createdProduct != null) {
+            return createdProduct;
+        }
         return null;
     }
 

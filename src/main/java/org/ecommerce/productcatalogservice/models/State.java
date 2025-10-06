@@ -4,4 +4,5 @@ public enum State {
     ACTIVE,
     INACTIVE,
     DELETED,
+    OUT_OF_STOCK
 }

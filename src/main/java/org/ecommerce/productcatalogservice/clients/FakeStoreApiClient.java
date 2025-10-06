@@ -2,6 +2,7 @@ package org.ecommerce.productcatalogservice.clients;
 
 import io.micrometer.common.lang.Nullable;
 import org.ecommerce.productcatalogservice.dtos.FakeStoreProductDto;
+import org.ecommerce.productcatalogservice.dtos.ProductDto;
 import org.ecommerce.productcatalogservice.models.Category;
 import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
@@ -57,6 +58,21 @@ public class FakeStoreApiClient {
         }
         return null;
     }
+
+    public Product createProduct(ProductDto productDto) {
+        FakeStoreProductDto fakeStoreProductDto = from(productDto);
+        ResponseEntity<FakeStoreProductDto> responseEntity = requestForEntity(
+                HttpMethod.POST,
+                "https://fakestoreapi.com/products",
+                fakeStoreProductDto,
+                FakeStoreProductDto.class
+        );
+        if(validateResponse(responseEntity)) {
+            return from(responseEntity.getBody());
+        }
+        return null;
+    }
+
 
     public Product replaceProduct(Product product, Long id){
         FakeStoreProductDto requestDto = FakeStoreProductDto.builder()
@@ -127,5 +143,17 @@ public class FakeStoreApiClient {
                 .price(dto.getPrice())
                 .category(Category.builder().name(dto.getCategory()).build())
                 .build();
+    }
+
+    private FakeStoreProductDto from(ProductDto productDto) {
+        FakeStoreProductDto dto = FakeStoreProductDto.builder()
+                .id(productDto.getId())
+                .title(productDto.getName())
+                .description(productDto.getDescription())
+                .category(productDto.getCategoryDto().getName())
+                .image(productDto.getImageUrl())
+                .price(productDto.getPrice())
+                .build();
+        return dto;
     }
 }

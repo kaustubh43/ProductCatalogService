@@ -6,6 +6,7 @@ import org.ecommerce.productcatalogservice.models.Category;
 import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,7 +25,7 @@ public class ProductController {
     private final IProductService productService;
 
     @Autowired
-    public ProductController(IProductService productService) {
+    public ProductController(@Qualifier("fakeStoreProductService") IProductService productService) {
         this.productService = productService;
     }
 
@@ -72,7 +73,11 @@ public class ProductController {
      */
     @PostMapping("/add")
     ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto){
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED); // Todo: Create a product and all other functions
+        Product product = productService.createProduct(productDto);
+        if(product == null){
+            throw new RuntimeException("Something went wrong on our side, Product could not be created");
+        }
+        return new ResponseEntity<>(getProductDtoFromProduct(product), HttpStatus.CREATED);
     }
 
     /**
