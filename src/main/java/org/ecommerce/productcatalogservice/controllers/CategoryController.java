@@ -79,6 +79,9 @@ public class CategoryController {
         throw new UnsupportedOperationException("Method not implemented");
     }
 
+    /**
+     * @return All categories
+     */
     @GetMapping
     ResponseEntity<List<CategoryDto>> getAllCategories(){
         List<Category> categories = categoryService.getCategories();
