@@ -58,7 +58,7 @@ public class CategoryController {
      */
     @PutMapping("/update")
     ResponseEntity<CategoryDto> updateCategory(@RequestBody Category category){
-        throw new RuntimeException("Method not implemented");
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     /**
@@ -67,7 +67,7 @@ public class CategoryController {
      */
     @PatchMapping("/patch")
     ResponseEntity<CategoryDto> patchCategory(@RequestBody Category category){
-        throw new RuntimeException("Method not implemented");
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     /**
@@ -76,7 +76,7 @@ public class CategoryController {
      */
     @DeleteMapping("/delete")
     ResponseEntity<CategoryDto> deleteCategory(@RequestBody Category category){
-        throw new RuntimeException("Method not implemented");
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     @GetMapping
