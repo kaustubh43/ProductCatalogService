@@ -55,13 +55,15 @@ public class StorageProductService implements IProductService {
      */
     @Override
     public Product createProduct(ProductDto productDto) {
-        Optional<Product>  productOptional = productRepository.findById(productDto.getId());
+        Optional<Product>  productOptional = productRepository.findByName(productDto.getName());
         if(productOptional.isPresent()){
             return null;
         }
         Optional<Category> category = categoryRepository.findByName(productDto.getCategoryDto().getName());
+        if(category.isEmpty()){
+            return null; // Todo: refactor to create a new category if not found
+        }
         Product product = Product.builder()
-                .id(productDto.getId())
                 .name(productDto.getName())
                 .description(productDto.getDescription())
                 .price(productDto.getPrice())

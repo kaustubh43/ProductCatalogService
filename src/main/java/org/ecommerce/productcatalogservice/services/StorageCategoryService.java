@@ -1,7 +1,6 @@
 package org.ecommerce.productcatalogservice.services;
 
 import org.ecommerce.productcatalogservice.models.Category;
-import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -55,13 +54,11 @@ public class StorageCategoryService implements ICategoryService {
      * @return
      */
     @Override
-    public Category createCategory(Long id, String name, String description) {
-        Category category = Category.builder()
-                .id(id)
-                .name(name)
-                .description(description).build();
-        Category saved = categoryRepository.save(category);
-        return saved;
+    public Category createCategory(String name, String description) {
+        Category category = new Category();
+        category.setName(name);
+        category.setDescription(description);
+        return categoryRepository.save(category);
     }
 
     /**

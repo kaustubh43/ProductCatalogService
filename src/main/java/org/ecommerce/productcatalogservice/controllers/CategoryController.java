@@ -45,11 +45,11 @@ public class CategoryController {
      */
     @PostMapping
     ResponseEntity<CategoryDto> createCategory(@RequestBody Category category){
-        Category created = categoryService.createCategory(category.getId(), category.getName(), category.getDescription());
+        Category created = categoryService.createCategory(category.getName(), category.getDescription());
         if(created == null) {
             throw new RuntimeException("Something went wrong on our side, Category could not be created");
         }
-        return new ResponseEntity<>(from(category), HttpStatus.CREATED);
+        return new ResponseEntity<>(from(created), HttpStatus.CREATED);
     }
 
     /**

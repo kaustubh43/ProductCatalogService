@@ -11,7 +11,7 @@ public interface ICategoryService {
 
     public Category getCategoryByName(String name);
 
-    public Category createCategory(Long id, String name, String description);
+    public Category createCategory(String name, String description);
 
     public List<Category> getCategories();
 
