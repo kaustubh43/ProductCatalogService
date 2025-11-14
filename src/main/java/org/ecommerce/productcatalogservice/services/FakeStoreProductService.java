@@ -10,6 +10,8 @@ import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Primary
 public class FakeStoreProductService implements IProductService {
 
     @Autowired
@@ -30,13 +33,31 @@ public class FakeStoreProductService implements IProductService {
     @Autowired
     private FakeStoreApiClient fakeStoreApiClient;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public Product getProductById(Long id) {
-        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProductById(id);
-        if(fakeStoreProductDto != null) {
-            return productFromFakeStoreProductDto(fakeStoreProductDto);
+//        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProductById(id);
+//        if(fakeStoreProductDto != null) {
+//            return productFromFakeStoreProductDto(fakeStoreProductDto);
+//        }
+//        return null;
+        // Check in cache first
+        FakeStoreProductDto fakeStoreProductDto = null;
+        fakeStoreProductDto = (FakeStoreProductDto) redisTemplate.opsForHash().get("PRODUCTS", id);
+
+        if(fakeStoreProductDto == null) {
+            // Not in cache, fetch from FakeStoreApiClient
+            fakeStoreProductDto = fakeStoreApiClient.getProductById(id);
+            if(fakeStoreProductDto != null) {
+                // Store in cache
+                redisTemplate.opsForHash().put("PRODUCTS", id, fakeStoreProductDto);
+                return productFromFakeStoreProductDto(fakeStoreProductDto);
+            }
+            return null;
         }
-        return null;
+        return productFromFakeStoreProductDto(fakeStoreProductDto);
     }
 
     @Override
