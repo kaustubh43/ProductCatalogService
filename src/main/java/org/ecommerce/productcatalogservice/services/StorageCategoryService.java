@@ -58,7 +58,12 @@ public class StorageCategoryService implements ICategoryService {
         Category category = new Category();
         category.setName(name);
         category.setDescription(description);
-        return categoryRepository.save(category);
+        Category saved = categoryRepository.save(category);
+        System.out.println("Saved category ID after save: " + saved.getId());
+        // Fetch again to confirm
+        Category fetched = categoryRepository.findById(saved.getId()).orElse(null);
+        System.out.println("Fetched category ID: " + (fetched != null ? fetched.getId() : null));
+        return saved;
     }
 
     /**

@@ -1,7 +1,7 @@
 package org.ecommerce.productcatalogservice.services;
 
-import org.ecommerce.productcatalogservice.dtos.CategoryDto;
 import org.ecommerce.productcatalogservice.dtos.ProductDto;
+import org.ecommerce.productcatalogservice.dtos.UserDto;
 import org.ecommerce.productcatalogservice.models.Category;
 import org.ecommerce.productcatalogservice.models.Product;
 import org.ecommerce.productcatalogservice.models.State;
@@ -10,8 +10,8 @@ import org.ecommerce.productcatalogservice.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +19,15 @@ import java.util.Optional;
 @Primary
 public class StorageProductService implements IProductService {
 
-    private CategoryRepository categoryRepository;
-    private ProductRepository productRepository;
+    private final RestTemplate restTemplate;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public StorageProductService(CategoryRepository categoryRepository, ProductRepository productRepository) {
+    public StorageProductService(CategoryRepository categoryRepository, ProductRepository productRepository, RestTemplate restTemplate) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -71,8 +73,7 @@ public class StorageProductService implements IProductService {
                 .state(State.ACTIVE)
                 .category(category.orElse(null))
                 .build();
-        Product savedProduct = productRepository.save(product);
-        return savedProduct;
+        return productRepository.save(product);
     }
 
     /**
@@ -104,5 +105,39 @@ public class StorageProductService implements IProductService {
         Product product = productOptional.get();
         product.setState(State.DELETED);
         return productRepository.save(product);
+    }
+
+    @Override
+    public Product getDetailsBasedOnUserRole(Long productId, Long userId) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if(productOptional.isEmpty()){
+            return null;
+        }
+        // Todo: Add check for product is listed or not, add a field in product.
+        UserDto userDto = restTemplate.getForEntity(
+                "http://UserAuthenticationService/users/{userId}",
+                UserDto.class,
+                userId).getBody();
+
+        if(userDto != null){
+            System.out.println("User Email: " + userDto.getEmail());
+
+            // Check user authorities/roles and then return the product.
+            if(userDto.getRoles() != null) {
+                boolean isAdmin = userDto.getRoles().stream()
+                        .anyMatch(role -> role.equalsIgnoreCase("ADMIN"));
+                if (isAdmin) {
+                    return productOptional.get();
+                } else {
+                    // For non-admin users, check if the product is ACTIVE
+                    if (productOptional.get().getState() == State.ACTIVE) {
+                        return productOptional.get(); // Listed Item
+                    } else {
+                        return null; // Product is not accessible to non-admin users, Unlisted Item
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

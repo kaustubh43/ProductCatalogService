@@ -1,6 +1,7 @@
 package org.ecommerce.productcatalogservice.services;
 
 import io.micrometer.common.lang.Nullable;
+import org.apache.commons.lang.NotImplementedException;
 import org.ecommerce.productcatalogservice.clients.FakeStoreApiClient;
 import org.ecommerce.productcatalogservice.dtos.FakeStoreProductDto;
 import org.ecommerce.productcatalogservice.dtos.ProductDto;
@@ -64,6 +65,11 @@ public class FakeStoreProductService implements IProductService {
             return deleted;
         }
         return null;
+    }
+
+    @Override
+    public Product getDetailsBasedOnUserRole(Long productId, Long userId) {
+        throw new NotImplementedException("Not implemented");
     }
 
     @Override

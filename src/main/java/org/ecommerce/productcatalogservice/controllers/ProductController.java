@@ -159,4 +159,13 @@ public class ProductController {
                         .build())
                 .build();
     }
+
+    @GetMapping("/{productId}/{userId}")
+    public ProductDto getProductIdBasedOnUserRole(@PathVariable Long productId, @PathVariable Long userId){
+        Product product = productService.getDetailsBasedOnUserRole(productId, userId);
+        if(product == null){
+            throw new RuntimeException("Product Not Found, Check Authorizations");
+        }
+        return getProductDtoFromProduct(product);
+    }
 }

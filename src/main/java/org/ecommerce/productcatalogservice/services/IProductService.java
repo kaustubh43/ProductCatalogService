@@ -16,4 +16,6 @@ public interface IProductService {
     Product replaceProduct(Product product, Long id);
 
     Product deleteProductById(Long id);
+
+    Product getDetailsBasedOnUserRole(Long productId, Long userId);
 }
