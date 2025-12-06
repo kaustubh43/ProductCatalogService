@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Primary
 public class FakeStoreProductService implements IProductService {
 
     @Autowired
