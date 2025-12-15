@@ -1,5 +1,6 @@
 package org.ecommerce.productcatalogservice.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -19,6 +20,7 @@ public class Product extends BaseModel {
     private String imageUrl;
     private double price;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Category category;
 
     // Business Specific Fields
