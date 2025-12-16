@@ -26,9 +26,34 @@ public class SearchController {
         this.searchService = searchService;
     }
 
+    // Todo: Add filters for search.
+    /**
+     * Sort by multiple parameters.
+     * Example payload
+     * {
+     *   "query": "Galaxy phone",
+     *   "pageSize": 4,
+     *   "pageNumber": 0,
+     *   "sortParameters": [
+     *     {
+     *       "sortCriteria": "price",
+     *       "sortOrder": "ASCENDING"
+     *     },
+     *     {
+     *       "sortCriteria": "id",
+     *       "sortOrder": "ASCENDING"
+     *     }
+     *   ]
+     * }
+     * @param searchRequestDto
+     * @return
+     */
     @PostMapping
     public Page<Product> searchProducts(@RequestBody SearchRequestDto searchRequestDto) {
-        Page<Product> products = searchService.searchProducts(searchRequestDto.getQuery(), searchRequestDto.getPageSize(), searchRequestDto.getPageNumber());
+        Page<Product> products = searchService.searchProducts(searchRequestDto.getQuery(),
+                searchRequestDto.getPageSize(),
+                searchRequestDto.getPageNumber(),
+                searchRequestDto.getSortParameters());
         return products;
     }
 
